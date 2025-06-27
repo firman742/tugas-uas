@@ -46,18 +46,17 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <!-- Tombol Edit -->
-                                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">
-                                            <i class="fas fa-edit"></i> Edit
+                                        <!-- Tombol Show -->
+                                        <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye"></i>
                                         </a>
-
                                         <!-- Tombol Delete -->
                                         <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline"
                                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?');">
                                             @csrf
                                             @method('DELETE')
                                             <button class="btn btn-sm btn-danger" type="submit">
-                                                <i class="fas fa-trash-alt"></i> Hapus
+                                                <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </form>
                                     </td>

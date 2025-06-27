@@ -1,70 +1,111 @@
 <x-app-layout>
     @section('content')
-        <h1 class="mb-4 text-gray-800">Edit Pengguna</h1>
+        <div class="row my-5">
+            <!-- Sidebar -->
+            <div class="col-md-4 mb-3">
+                <div class="profile-sidebar bg-warning">
+                    <img src="{{ $user->profile_photo
+                            ? asset('storage/profile_photos/' . $user->profile_photo)
+                            : asset('img/undraw_profile.svg') }}"
+                         alt="Foto Profil">
+                    <h4 class="text-white">{{ $user->name }}</h4>
+                    <p class="text-white">{{ $user->email }}</p>
 
-        <div class="card shadow mb-4">
-            <div class="card-body">
-                <form method="POST" action="{{ route('users.update', $user->id) }}">
-                    @csrf
-                    @method('PUT')
+                    <hr>
+                    <div class="list-group text-start">
+                        <a href="{{ route('users.show', $user->id) }}"
+                           class="list-group-item list-group-item-action {{ request()->routeIs('users.show') ? 'active' : '' }}">
+                            <i class="bi bi-person"></i> Profil
+                        </a>
 
-                    <div class="form-group">
-                        <label>Nama</label>
-                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" required value="{{ old('name', $user->name) }}">
-                        @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <a href="{{ route('users.edit', $user->id) }}"
+                           class="list-group-item list-group-item-action {{ request()->routeIs('users.edit') ? 'active' : '' }}">
+                            <i class="bi bi-pencil-square"></i> Edit Profil
+                        </a>
+
+                        <a href="{{ route('users.index') }}"
+                           class="list-group-item list-group-item-action {{ request()->routeIs('users.index') ? 'active' : '' }}">
+                            <i class="bi bi-arrow-left-circle"></i> Kembali ke Menu
+                        </a>
                     </div>
+                </div>
+            </div>
 
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" required value="{{ old('email', $user->email) }}">
-                        @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+            <!-- Form Edit -->
+            <div class="col-md-8">
+                <section class="card">
+                    <div class="bio-graph-heading bg-warning">
+                        Perbarui informasi pengguna di bawah ini
                     </div>
+                    <div class="bio-graph-form">
+                        <form method="POST" action="{{ route('users.update', $user->id) }}">
+                            @csrf
+                            @method('PUT')
 
-                    <div class="form-group">
-                        <label>No. Telpon</label>
-                        <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone', $user->phone) }}">
-                        @error('phone')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                            <div class="mb-3">
+                                <label class="form-label">Nama</label>
+                                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                                       value="{{ old('name', $user->name) }}" required>
+                                @error('name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                                       value="{{ old('email', $user->email) }}" required>
+                                @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">No. Telepon</label>
+                                <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror"
+                                       value="{{ old('phone', $user->phone) }}">
+                                @error('phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Alamat</label>
+                                <input type="text" name="address" class="form-control @error('address') is-invalid @enderror"
+                                       value="{{ old('address', $user->address) }}">
+                                @error('address')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Role</label>
+                                <select name="role" class="form-select @error('role') is-invalid @enderror" required>
+                                    <option value="pengguna" {{ old('role', $user->role) == 'pengguna' ? 'selected' : '' }}>Pengguna</option>
+                                    <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                                </select>
+                                @error('role')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Status Aktif</label>
+                                <select name="is_active" class="form-select @error('is_active') is-invalid @enderror" required>
+                                    <option value="1" {{ old('is_active', $user->is_active) == 1 ? 'selected' : '' }}>Aktif</option>
+                                    <option value="0" {{ old('is_active', $user->is_active) == 0 ? 'selected' : '' }}>Tidak Aktif</option>
+                                </select>
+                                @error('is_active')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="text-start mt-4">
+                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                            </div>
+                        </form>
                     </div>
-
-                    <div class="form-group">
-                        <label>Alamat</label>
-                        <input type="text" name="address" class="form-control @error('address') is-invalid @enderror" value="{{ old('address', $user->address) }}">
-                        @error('address')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label>Role</label>
-                        <select name="role" class="form-control @error('role') is-invalid @enderror" required>
-                            <option value="pengguna" {{ old('role', $user->role) == 'pengguna' ? 'selected' : '' }}>Pengguna</option>
-                            <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
-                        </select>
-                        @error('role')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label>Status Aktif</label>
-                        <select name="is_active" class="form-control @error('is_active') is-invalid @enderror" required>
-                            <option value="1" {{ old('is_active', $user->is_active) == 1 ? 'selected' : '' }}>Aktif</option>
-                            <option value="0" {{ old('is_active', $user->is_active) == 0 ? 'selected' : '' }}>Tidak Aktif</option>
-                        </select>
-                        @error('is_active')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <button type="submit" class="btn btn-primary mt-3">Simpan</button>
-                    <a href="{{ route('users.index') }}" class="btn btn-secondary mt-3">Kembali</a>
-                </form>
+                </section>
             </div>
         </div>
     @endsection
