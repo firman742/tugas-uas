@@ -51,18 +51,6 @@
                         @enderror
                     </div>
 
-                    <!-- Dropdown Status Aktif -->
-                    <div class="form-group">
-                        <label>Status Aktif</label>
-                        <select name="is_active" class="form-control @error('is_active') is-invalid @enderror" required>
-                            <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Aktif</option>
-                            <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Tidak Aktif</option>
-                        </select>
-                        @error('is_active')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
                     <div class="form-group">
                         <label>Password</label>
                         <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" required>

@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('admin.access');
+        $this->middleware('superadmin.only')->only(['destroy', 'toggleStatus']);
+    }
+
     public function index()
     {
         $users = User::all();
@@ -32,17 +39,16 @@ class UserController extends Controller
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
             'role' => 'required|in:admin,pengguna',
-            'is_active' => 'required|boolean',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
         User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,  // Perhatikan penamaan kolom di migration = phone
+            'phone' => $validated['phone'] ?? null,
             'address' => $validated['address'] ?? null,
             'role' => $validated['role'],
-            'is_active' => $validated['is_active'],
+            'is_active' => true,
             'password' => bcrypt($validated['password']),
         ]);
 
@@ -54,7 +60,7 @@ class UserController extends Controller
         return view('user.edit', compact('user'));
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -75,6 +81,18 @@ class UserController extends Controller
         ]);
 
         return redirect()->route('users.index')->with('success', 'User berhasil diperbarui.');
+    }
+
+    public function toggleStatus(User $user): RedirectResponse
+    {
+        if (auth()->user()->role !== 'superadmin') {
+            abort(403, 'Akses ditolak: hanya superadmin yang dapat mengubah status akun.');
+        }
+
+        $user->is_active = !$user->is_active;
+        $user->save();
+
+        return redirect()->back()->with('success', 'Status pengguna berhasil diperbarui.');
     }
 
     public function destroy(User $user)

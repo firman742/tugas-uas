@@ -45,20 +45,22 @@
                                             <span class="badge badge-secondary">Nonaktif</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <!-- Tombol Show -->
                                         <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-primary">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <!-- Tombol Delete -->
-                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline"
-                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-sm btn-danger" type="submit">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
+                                        @if (auth()->user()->role === 'superadmin')
+                                            <!-- Tombol Delete -->
+                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline"
+                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-sm btn-danger" type="submit">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

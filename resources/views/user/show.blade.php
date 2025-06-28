@@ -65,6 +65,14 @@
                                 @else
                                     <span class="badge bg-danger">Tidak Aktif</span>
                                 @endif
+
+                                <!-- Tombol toggle status -->
+                                @if (auth()->user()->role === 'superadmin')
+                                    <button class="btn btn-sm {{ $user->is_active ? 'btn-danger' : 'btn-primary' }} ms-2" onclick="event.preventDefault(); toggleStatus({{ $user->id }}, {{ $user->is_active ? 'true' : 'false' }})">
+                                        <i class="fas fa-pen"></i>
+                                        {{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                    </button>
+                                @endif
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -85,5 +93,25 @@
             </div>
 
         </div>
+
+        <script>
+            function toggleStatus(userId, isActive) {
+                const action = isActive ? 'menonaktifkan' : 'mengaktifkan';
+                if (confirm(`Apakah Anda yakin ingin ${action} akun ini?`)) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/users/${userId}/toggle-status`;
+
+                    const csrf = document.createElement('input');
+                    csrf.type = 'hidden';
+                    csrf.name = '_token';
+                    csrf.value = '{{ csrf_token() }}';
+
+                    form.appendChild(csrf);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            }
+        </script>
     @endsection
 </x-app-layout>

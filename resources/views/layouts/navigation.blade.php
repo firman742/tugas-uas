@@ -33,20 +33,19 @@
     </div>
 </li>
 
-
+@if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin())
 <!-- Heading -->
 <div class="sidebar-heading">
     Manajemen
 </div>
 
-<!-- Nav Item - User -->
+<!-- Nav Item - User (only for superadmin or admin) -->
 <li class="nav-item {{ request()->routeIs('users.index') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('users.index') }}">
         <i class="fas fa-fw fa-user"></i>
         <span>Pengguna</span></a>
 </li>
-
-
+@endif
 
 <!-- Divider -->
 <hr class="sidebar-divider d-none d-md-block">

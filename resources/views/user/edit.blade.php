@@ -53,7 +53,8 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Email</label>
-                                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                                <input type="email" name="email"
+                                       class="form-control @error('email') is-invalid @enderror"
                                        value="{{ old('email', $user->email) }}" required>
                                 @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -62,7 +63,8 @@
 
                             <div class="mb-3">
                                 <label class="form-label">No. Telepon</label>
-                                <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror"
+                                <input type="text" name="phone"
+                                       class="form-control @error('phone') is-invalid @enderror"
                                        value="{{ old('phone', $user->phone) }}">
                                 @error('phone')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -71,7 +73,8 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Alamat</label>
-                                <input type="text" name="address" class="form-control @error('address') is-invalid @enderror"
+                                <input type="text" name="address"
+                                       class="form-control @error('address') is-invalid @enderror"
                                        value="{{ old('address', $user->address) }}">
                                 @error('address')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -81,21 +84,15 @@
                             <div class="mb-3">
                                 <label class="form-label">Role</label>
                                 <select name="role" class="form-select @error('role') is-invalid @enderror" required>
-                                    <option value="pengguna" {{ old('role', $user->role) == 'pengguna' ? 'selected' : '' }}>Pengguna</option>
-                                    <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                                    <option
+                                        value="pengguna" {{ old('role', $user->role) === 'pengguna' ? 'selected' : '' }}>
+                                        Pengguna
+                                    </option>
+                                    <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>
+                                        Admin
+                                    </option>
                                 </select>
                                 @error('role')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Status Aktif</label>
-                                <select name="is_active" class="form-select @error('is_active') is-invalid @enderror" required>
-                                    <option value="1" {{ old('is_active', $user->is_active) == 1 ? 'selected' : '' }}>Aktif</option>
-                                    <option value="0" {{ old('is_active', $user->is_active) == 0 ? 'selected' : '' }}>Tidak Aktif</option>
-                                </select>
-                                @error('is_active')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
