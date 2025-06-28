@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('users', UserController::class);
+    Route::resource('laporan', LaporanController::class);
 });
 
 /**
@@ -42,7 +44,5 @@ Route::get('/migrate-fresh', function () {
     Artisan::call('migrate:fresh');
     return Response::make('<pre>' . Artisan::output() . '</pre>');
 });
-
-
 
 require __DIR__.'/auth.php';

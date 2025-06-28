@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Laporan;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLaporanRequest;
 use App\Http\Requests\UpdateLaporanRequest;
 use App\Http\Requests\IndexLaporanRequest;
@@ -36,7 +35,7 @@ class LaporanController extends Controller
 
         $laporan = $query->get();
 
-        return view('laporan', compact('laporan'));
+        return view('laporan.laporan', compact('laporan'));
     }
 
     /**
@@ -128,7 +127,7 @@ class LaporanController extends Controller
 
         $data = $query->get();
 
-        return view('harian', compact('data', 'tanggal'));
+        return view('laporan.harian', compact('data', 'tanggal'));
     }
 
     public function laporanBulanan(Request $request)
@@ -150,8 +149,6 @@ class LaporanController extends Controller
 
         $data = $query->get();
 
-        return view('bulanan', compact('data', 'bulan'));
+        return view('laporan.bulanan', compact('data', 'bulan'));
     }
-
-
 }
