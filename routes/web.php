@@ -20,4 +20,29 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class);
 });
 
+/**
+ * Routing for artisan
+ */
+Route::get('/clear-cache', function() {
+    Artisan::call('cache:clear');
+    return "Cache is cleared";
+});
+
+Route::get('/artisan-optimize', function() {
+    Artisan::call('optimize');
+    return "Platform is optimize";
+});
+
+Route::get('/migrate-fresh-seed', function () {
+    Artisan::call('migrate:fresh --seed');
+    return Response::make('<pre>' . Artisan::output() . '</pre>');
+});
+
+Route::get('/migrate-fresh', function () {
+    Artisan::call('migrate:fresh');
+    return Response::make('<pre>' . Artisan::output() . '</pre>');
+});
+
+
+
 require __DIR__.'/auth.php';
