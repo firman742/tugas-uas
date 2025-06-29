@@ -49,9 +49,9 @@ Ini adalah repository untuk tugas Ujian Akhir Semester (UAS) yang berisi source 
 
 ---
 
-## 🤝 Kontribusi
+## 🤝 Kontribusi / Integrasi
 
-Kami sangat terbuka untuk kontribusi! Lihat [CONTRIBUTING.md](CONTRIBUTING.md) untuk petunjuk cara berkontribusi.
+Kami sangat terbuka untuk kontribusi! Lihat [CONTRIBUTING.md](CONTRIBUTING.md) untuk petunjuk cara berkontribusi / integrasi.
 
 ---
 

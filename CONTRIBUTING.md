@@ -1,11 +1,11 @@
 
-# 🤝 Panduan Kontribusi
+# 🤝 Panduan Kontribusi / Integrasi
 
 Terima kasih ingin berkontribusi pada proyek ini! Berikut adalah langkah-langkah standar agar kontribusimu bisa berjalan lancar.
 
 ---
 
-## 🚧 Langkah-langkah Kontribusi
+## 🚧 Langkah-langkah Kontribusi / Integrasi
 
 1. **Clone** repository ini ke komputermu:
    ```bash
