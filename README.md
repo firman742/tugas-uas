@@ -1,14 +1,19 @@
-# 🎓 Tugas UAS - Sistem [Nama Proyek]
+# 🎓 Tugas UAS - Sistem Aplikasi Bank Sampah Diansati
 
-Ini adalah repository untuk tugas Ujian Akhir Semester (UAS) yang berisi source code dari [penjelasan singkat sistem, misalnya: sistem manajemen pengguna, aplikasi keuangan, dll].
+Ini adalah repository untuk tugas Ujian Akhir Semester (UAS) yang berisi source code dari sistem manajemen bank sampah Diansati.com.
 
 ## 📁 Struktur Proyek
 
 ```
+- app/
+- bootstarp/
+- config/
+- database/
 - public/
 - resources/
 - routes/
-- app/
+- storage/
+- tests/
 - ...
 ```
 
@@ -26,13 +31,13 @@ Ini adalah repository untuk tugas Ujian Akhir Semester (UAS) yang berisi source 
    npm install && npm run dev
    ```
 
-3. Copy file `.env.example` dan sesuaikan konfigurasi:
+3. Copy file `.env.example` lalu ganti nama menjadi '.env' dan sesuaikan konfigurasi:
    ```bash
    cp .env.example .env
    php artisan key:generate
    ```
 
-4. Migrasi dan seed database:
+4. Migrasikan database beserta seeder nya:
    ```bash
    php artisan migrate --seed
    ```
@@ -52,4 +57,4 @@ Kami sangat terbuka untuk kontribusi! Lihat [CONTRIBUTING.md](CONTRIBUTING.md) u
 
 ## 🧑‍💻 Dibuat Oleh
 
-- Hafidz Firman Abdullah ([@firman742](https://github.com/firman742))
+[//]: # (- Hafidz Firman Abdullah &#40;[@firman742]&#40;https://github.com/firman742&#41;&#41;)
