@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SetoranController;
 use App\Http\Controllers\UserController;
-use App\Http\Middleware\AdminManagementAccessMiddleware;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -24,6 +26,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('setorans', SetoranController::class);
     Route::resource('users', UserController::class);
     Route::post('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+
+    Route::resource('sales', PenjualanController::class);
 });
 
 
@@ -45,8 +49,13 @@ Route::get('/migrate-fresh-seed', function () {
     return Response::make('<pre>' . Artisan::output() . '</pre>');
 });
 
-Route::get('/migrate-fresh', function () {
-    Artisan::call('migrate:fresh');
+Route::get('/migrate', function () {
+    Artisan::call('migrate');
+    return Response::make('<pre>' . Artisan::output() . '</pre>');
+});
+
+Route::get('/storage-link', function () {
+    Artisan::call('storage:link');
     return Response::make('<pre>' . Artisan::output() . '</pre>');
 });
 

@@ -24,10 +24,11 @@
 </li>
 
 <!-- Nav Item - Buku penjualan -->
-<li class="nav-item {{ request()->routeIs('users.index') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('users.index') }}">
+<li class="nav-item {{ request()->routeIs('sales.index') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('sales.index') }}">
         <i class="fas fa-fw fa-book"></i>
-        <span>Buku Penjualan</span></a>
+        <span>Buku Penjualan</span>
+    </a>
 </li>
 
 <!-- Nav Item - Laporan -->
