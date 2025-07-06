@@ -16,6 +16,20 @@
         <span>Dashboard</span></a>
 </li>
 
+<!-- Nav Item - ranking setoran -->
+<li class="nav-item {{ request()->routeIs('setorans.index') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('setorans.index') }}">
+        <i class="fas fa-fw fa-money-bill"></i>
+        <span>Rangking Setoran</span></a>
+</li>
+
+<!-- Nav Item - Buku penjualan -->
+<li class="nav-item {{ request()->routeIs('users.index') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('users.index') }}">
+        <i class="fas fa-fw fa-book"></i>
+        <span>Buku Penjualan</span></a>
+</li>
+
 <!-- Nav Item - Laporan -->
 <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
