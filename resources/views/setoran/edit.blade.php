@@ -1,4 +1,5 @@
 <x-app-layout>
+@section('content')
     <div class="container mx-auto p-4">
         <h2 class="text-xl font-bold mb-4">Edit Setoran</h2>
 
@@ -86,4 +87,5 @@
         </script>
 
     </div>
+    @endsection
 </x-app-layout>

@@ -1,4 +1,5 @@
 <x-app-layout>
+@section('content')
     <div class="container mx-auto p-4">
         <h2 class="text-xl font-bold mb-4">Riwayat Buku Kecil (Setoran)</h2>
 
@@ -95,4 +96,36 @@
             </tbody>
         </table>
     </div>
+     <script>
+        const ctx = document.getElementById('pieChart').getContext('2d');
+        const pieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: @json($labels),
+                datasets: [{
+                    label: 'Jumlah Setoran',
+                    data: @json($values),
+                    backgroundColor: [
+                        '#f94144', '#f3722c', '#f8961e',
+                        '#f9844a', '#43aa8b', '#577590',
+                        '#90be6d', '#277da1', '#e76f51', '#a8dadc'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: {
+                        display: true,
+                        text: 'Perbandingan Setoran per Nama'
+                    }
+                }
+            }
+        });
+    </script>
+    
+    @endsection
 </x-app-layout>

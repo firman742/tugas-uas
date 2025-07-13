@@ -156,5 +156,4 @@ class SetoranController extends Controller
 
         return redirect()->back()->with('success', 'Status berhasil diperbarui.');
     }
-
 }
