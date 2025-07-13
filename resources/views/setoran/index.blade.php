@@ -29,41 +29,41 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr class="bg-gray-100">
-                                @if (auth()->user()->role === 'admin')
-                                    <th class="border p-2">Nama Nasabah</th>
+                                @if (auth()->user()->role !== 'nasabah')
+                                    <th>Nama Nasabah</th>
                                 @endif
-                                <th class="border p-2">Tanggal</th>
-                                <th class="border p-2">Jenis Sampah</th>
-                                <th class="border p-2">Berat (kg)</th>
-                                <th class="border p-2">Harga/kg</th>
-                                <th class="border p-2">Total</th>
-                                <th class="border p-2">Bukti Foto</th>
-                                <th class="border p-2">Status</th>
-                                <th class="border p-2">Verifikasi</th>
-                                @if (auth()->user()->role === 'admin')
-                                    <th class="border p-2">Aksi</th>
+                                <th>Tanggal</th>
+                                <th>Jenis Sampah</th>
+                                <th>Berat (kg)</th>
+                                <th>Harga/kg</th>
+                                <th>Total</th>
+                                <th>Bukti Foto</th>
+                                <th>Status</th>
+                                <th>Verifikasi</th>
+                                @if (auth()->user()->role !== 'nasabah')
+                                    <th>Aksi</th>
                                 @endif
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($setorans as $s)
                                 <tr>
-                                    @if (auth()->user()->role === 'admin')
-                                        <td class="border p-2">{{ $s->user->name }}</td>
+                                    @if (auth()->user()->role !== 'nasabah')
+                                        <td>{{ $s->user->name }}</td>
                                     @endif
-                                    <td class="border p-2">{{ $s->tanggal_setor }}</td>
-                                    <td class="border p-2">{{ $s->jenisSampah->nama ?? 'Tidak Diketahui' }}</td>
-                                    <td class="border p-2">{{ $s->berat }}</td>
-                                    <td class="border p-2">Rp{{ number_format($s->harga_per_kg) }}</td>
-                                    <td class="border p-2">Rp{{ number_format($s->total) }}</td>
-                                    <td class="border p-2">
+                                    <td>{{ $s->tanggal_setor }}</td>
+                                    <td>{{ $s->jenisSampah->nama ?? 'Tidak Diketahui' }}</td>
+                                    <td>{{ $s->berat }}</td>
+                                    <td>Rp{{ number_format($s->harga_per_kg) }}</td>
+                                    <td>Rp{{ number_format($s->total) }}</td>
+                                    <td>
                                         @if ($s->foto_bukti)
                                             <a href="{{ asset('storage/' . $s->foto_bukti) }}" target="_blank">Lihat Foto</a>
                                         @else
                                             Tidak Ada
                                         @endif
                                     </td>
-                                    <td class="border p-2">
+                                    <td>
                                         <span
                                             class="px-2 py-1 rounded text-xs font-semibold
                                             {{ $s->status === 'Terjual' ? 'bg-green-200 text-green-800' : 'bg-yellow-200 text-yellow-800' }}">
@@ -71,14 +71,14 @@
                                         </span>
                                     </td>
             
-                                    @if (auth()->user()->role === 'admin')
-                                        <td class="border p-2">
+                                    @if (auth()->user()->role !== 'nasabah')
+                                        <td>
                                             @if ($s->status === 'Belum')
                                                 <form action="{{ route('setoran.updateStatus', $s->id) }}" method="POST">
                                                     @csrf
                                                     @method('PUT')
                                                     <input type="hidden" name="status" value="Terjual">
-                                                    <button type="submit" class="text-blue-600 hover:underline">Tandai
+                                                    <button type="submit" class="btn btn-danger">Tandai
                                                         Terjual</button>
                                                 </form>
                                             @else
@@ -86,23 +86,22 @@
                                                     @csrf
                                                     @method('PUT')
                                                     <input type="hidden" name="status" value="Belum">
-                                                    <button type="submit" class="text-red-600 hover:underline">Kembalikan ke
+                                                    <button type="submit" class="btn btn-sm btn-danger">Kembalikan ke
                                                         Belum</button>
                                                 </form>
                                             @endif
                                         </td>
                                     @endif
             
-                                    @if (auth()->user()->role === 'admin')
-                                        <td class="border p-2 space-x-2">
+                                    @if (auth()->user()->role !== 'nasabah')
+                                        <td style="width: 150px">
                                             <a href="{{ route('setoran.edit', $s->id) }}"
-                                                class="text-blue-500 hover:underline">Edit</a>
-                                            <form action="{{ route('setoran.destroy', $s->id) }}" method="POST"
-                                                style="display:inline;">
+                                                class="btn btn-primary btn-sm">Edit</a>
+                                            <form action="{{ route('setoran.destroy', $s->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" onclick="return confirm('Yakin hapus data ini?')"
-                                                    class="text-red-500 hover:underline">
+                                                    class="btn btn-danger btn-sm">
                                                     Hapus
                                                 </button>
                                             </form>

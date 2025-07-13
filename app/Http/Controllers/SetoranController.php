@@ -52,7 +52,7 @@ class SetoranController extends Controller
             'foto_bukti' => $fotoPath,
         ]);
 
-        return redirect()->route('setoran.create')->with('success', 'Setoran berhasil disimpan.');
+        return redirect()->route('setoran.index')->with('success', 'Setoran berhasil disimpan.');
     }
 
     public function index(Request $request)

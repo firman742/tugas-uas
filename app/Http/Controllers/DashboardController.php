@@ -13,7 +13,7 @@ class DashboardController extends Controller
         $user = auth()->user();
 
         // Kalau admin, tampilkan semua data seperti sebelumnya
-        if ($user->role === 'admin') {
+        if ($user->role !== 'nasabah') {
             $totalSetoran = \App\Models\Setoran::sum('total');
 
             $perBulan = \App\Models\Setoran::selectRaw('MONTH(tanggal_setor) as bulan, SUM(total) as total')
@@ -39,7 +39,7 @@ class DashboardController extends Controller
             $totalSetoran = \App\Models\Setoran::where('user_id', $user->id)->sum('total');
             $riwayat = \App\Models\Setoran::where('user_id', $user->id)->orderByDesc('tanggal_setor')->take(10)->get();
 
-            return view('dashboard-nasabah', compact('totalSetoran', 'riwayat'));
+            return view('dashboard', compact('totalSetoran', 'riwayat'));
         }
     }
 }

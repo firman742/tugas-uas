@@ -5,11 +5,18 @@
         <span>Dashboard</span></a>
 </li>
 
-<!-- Nav Item - ranking setoran -->
+<!-- Nav Item - ranking setoran (Fajar) -->
 <li class="nav-item {{ request()->routeIs('setorans.index') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('setorans.index') }}">
         <i class="fas fa-fw fa-money-bill"></i>
         <span>Rangking Setoran</span></a>
+</li>
+
+<!-- Nav Item - buku kecil / nasabah (Awang) -->
+<li class="nav-item {{ request()->routeIs('setorans.index') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('setorans.index') }}">
+        <i class="fas fa-fw fa-book"></i>
+        <span>Buku Kecil</span></a>
 </li>
 
 <!-- Nav Item - Buku penjualan -->
