@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('setorans', function (Blueprint $table) {
+        Schema::create('ranking_setorans', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
             $table->integer('jumlah');

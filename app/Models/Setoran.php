@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setoran extends Model
 {
+    protected $table = 'setorans';
+
     protected $fillable = [
         'user_id',
         'tanggal_setor',

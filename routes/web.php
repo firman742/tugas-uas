@@ -3,7 +3,6 @@
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Middleware\AdminManagementAccessMiddleware;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Response;
