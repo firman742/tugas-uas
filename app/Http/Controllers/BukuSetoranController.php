@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BukuSetoran;
 use Illuminate\Http\Request;
 use App\Models\Setoran;
 use App\Models\User;
@@ -13,7 +14,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\JenisSampah;
 
 
-class SetoranController extends Controller
+class BukuSetoranController extends Controller
 {
     public function create()
     {
@@ -42,7 +43,7 @@ class SetoranController extends Controller
 
         $jenis = JenisSampah::findOrFail($request->jenis_sampah);
 
-        Setoran::create([
+        BukuSetoran::create([
             'user_id' => $request->user_id,
             'tanggal_setor' => $request->tanggal_setor,
             'jenis_sampah' => $request->jenis_sampah,
@@ -57,7 +58,7 @@ class SetoranController extends Controller
 
     public function index(Request $request)
     {
-        $query = Setoran::with('user', 'jenisSampah')->latest();
+        $query = BukuSetoran::with('user', 'jenisSampah')->latest();
 
         if (auth()->user()->role === 'nasabah') {
             $query->where('user_id', auth()->id());
@@ -81,7 +82,7 @@ class SetoranController extends Controller
 
     public function edit($id)
     {
-        $setoran = Setoran::findOrFail($id);
+        $setoran = BukuSetoran::findOrFail($id);
         $nasabahs = User::where('role', 'nasabah')->get();
         $jenisSampahs = JenisSampah::all();
 
@@ -99,7 +100,7 @@ class SetoranController extends Controller
             'foto_bukti' => 'nullable|image|max:2048',
         ]);
 
-        $setoran = Setoran::findOrFail($id);
+        $setoran = BukuSetoran::findOrFail($id);
 
         $total = $request->berat * $request->harga_per_kg;
 
@@ -127,7 +128,7 @@ class SetoranController extends Controller
 
     public function destroy($id)
     {
-        $setoran = Setoran::findOrFail($id);
+        $setoran = BukuSetoran::findOrFail($id);
 
         if ($setoran->foto_bukti) {
             \Storage::disk('public')->delete($setoran->foto_bukti);
@@ -153,7 +154,7 @@ class SetoranController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        $setoran = Setoran::findOrFail($id);
+        $setoran = BukuSetoran::findOrFail($id);
         $setoran->status = $request->status;
         $setoran->save();
 

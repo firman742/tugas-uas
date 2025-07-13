@@ -1,6 +1,6 @@
 <x-app-layout>
     @section('content')
-        <h2 class="text-xl font-bold mb-4">Form Input Setoran Sampah</h2>
+        <h2 class="text-xl font-bold mb-4">Form Input Buku Setoran Sampah</h2>
 
         <div class="card shadow mb-4">
             <div class="card-body">

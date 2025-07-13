@@ -1,8 +1,7 @@
 <x-app-layout>
     @section('content')
-        <h2 class="text-xl font-bold mb-4">Riwayat Buku Kecil (Setoran)</h2>
-
-        <div class="card shadow mb-2">
+        <h2 class="text-xl font-bold mb-4">Riwayat Buku Setoran Nasabah</h2>
+        {{--  <div class="card shadow mb-2">
             <div class="card-body">
                 <form method="GET" action="{{ route('setoran.index') }}" class="mb-4 space-x-2">
                     <input type="date" name="tanggal_awal" value="{{ request('tanggal_awal') }}" class="border p-2 rounded"
@@ -14,7 +13,7 @@
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Filter</button>
                 </form>
             </div>
-        </div>
+        </div> --}}
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -28,7 +27,8 @@
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
-                            <tr class="bg-gray-100">
+                            <tr>
+                                <th>No.</th>
                                 @if (auth()->user()->role !== 'nasabah')
                                     <th>Nama Nasabah</th>
                                 @endif
@@ -48,6 +48,7 @@
                         <tbody>
                             @forelse($setorans as $s)
                                 <tr>
+                                    <td>{{ $loop->iteration }}</td>
                                     @if (auth()->user()->role !== 'nasabah')
                                         <td>{{ $s->user->name }}</td>
                                     @endif
@@ -111,7 +112,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center p-2">Belum ada data</td>
+                                    <td colspan="11" class="text-center p-2">Belum ada data</td>
                                 </tr>
                             @endforelse
                         </tbody>

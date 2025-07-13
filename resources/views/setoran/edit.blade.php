@@ -1,6 +1,6 @@
 <x-app-layout>
 @section('content')
-        <h2 class="mb-4 text-gray-800">Edit Setoran</h2>
+        <h2 class="mb-4 text-gray-800">Edit Buku Setoran</h2>
 
         <div class="card shadow">
             <div class="card-body">
