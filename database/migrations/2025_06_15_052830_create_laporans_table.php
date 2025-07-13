@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('jenis_barang');
             $table->integer('jumlah_barang');
             $table->unsignedBigInteger('user_id');
-            $table->boolean('status')->default(false);
+            $table->string('status')->default('Belum');
             $table->boolean('verifikasi')->default(false);
             $table->timestamps();
 

@@ -73,7 +73,10 @@ class SetoranController extends Controller
 
         $setorans = $query->get();
 
-        return view('setoran.index', compact('setorans'));
+        $labels = $setorans->pluck('nama');
+        $values = $setorans->pluck('jumlah');
+
+        return view('setoran.index', compact('setorans', 'labels', 'values'));
     }
 
     public function edit($id)
