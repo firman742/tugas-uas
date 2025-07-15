@@ -34,8 +34,9 @@
                     <!-- Jenis Sampah -->
                     <div class="mb-2">
                         <label for="jenis_sampah">Jenis Sampah</label>
-                        <select name="jenis_sampah" id="jenis_sampah"
-                            class="form-control @error('jenis_sampah') is-invalid @enderror" onchange="setHarga()" required>
+                        <select name="jenis_sampah_id" id="jenis_sampah"
+                            class="form-control @error('jenis_sampah_id') is-invalid @enderror" onchange="setHarga()"
+                            required>
                             <option value="">-- Pilih --</option>
                             @foreach ($jenisSampahs as $item)
                                 <option value="{{ $item->id }}" data-harga="{{ $item->harga_per_kg }}">
@@ -43,7 +44,7 @@
                                 </option>
                             @endforeach
                         </select>
-                        @error('jenis_sampah')
+                        @error('jenis_sampah_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -61,7 +62,7 @@
                     <!-- Harga per kg -->
                     <div class="mb-2">
                         <label for="harga">Harga per Kg</label>
-                        <input type="number" name="harga_per_kg" id="harga"
+                        <input type="text" name="harga_per_kg" id="harga"
                             class="form-control @error('harga') is-invalid @enderror bg-gray-100" readonly required>
                         @error('harga_per_kg')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -71,12 +72,13 @@
                     <!-- Total -->
                     <div class="mb-2">
                         <label for="total">Total</label>
-                        <input type="number" name="total" id="total"
+                        <input type="text" name="total" id="total"
                             class="form-control @error('total') is-invalid @enderror bg-gray-100" readonly required>
                         @error('total')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
 
                     <!-- Upload Foto -->
                     <div class="mb-2">
@@ -97,19 +99,45 @@
 
         <!-- Script JS -->
         <script>
+            function formatRupiah(angka) {
+                return new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                }).format(angka);
+            }
+
+            function parseRupiah(rupiah) {
+                return parseInt((rupiah || '').toString().replace(/[^0-9]/g, '')) || 0;
+            }
+
             function setHarga() {
                 const select = document.getElementById('jenis_sampah');
                 const harga = select.options[select.selectedIndex].getAttribute('data-harga');
-                document.getElementById('harga').value = harga;
+                document.getElementById('harga').value = formatRupiah(harga);
                 hitungTotal();
             }
 
             function hitungTotal() {
                 const berat = parseFloat(document.getElementById('berat').value) || 0;
-                const harga = parseFloat(document.getElementById('harga').value) || 0;
+                const harga = parseRupiah(document.getElementById('harga').value);
                 const total = berat * harga;
-                document.getElementById('total').value = total;
+                document.getElementById('total').value = formatRupiah(total);
             }
+
+            // Optional: reformat saat halaman dimuat jika sudah ada nilai
+            window.addEventListener('DOMContentLoaded', () => {
+                const hargaInput = document.getElementById('harga');
+                const totalInput = document.getElementById('total');
+
+                if (hargaInput.value && !isNaN(hargaInput.value)) {
+                    hargaInput.value = formatRupiah(hargaInput.value);
+                }
+
+                if (totalInput.value && !isNaN(totalInput.value)) {
+                    totalInput.value = formatRupiah(totalInput.value);
+                }
+            });
         </script>
     @endsection
 </x-app-layout>

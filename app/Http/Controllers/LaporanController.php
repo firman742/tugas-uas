@@ -49,7 +49,7 @@ class LaporanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLaporanRequest $request)
+    public function store(Request $request)
     {
         $request->validate([
             'tanggal' => 'required|date',
@@ -87,7 +87,7 @@ class LaporanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateLaporanRequest $request, Laporan $laporan)
+    public function update(Request $request, Laporan $laporan)
     {
         //
     }

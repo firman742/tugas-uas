@@ -15,7 +15,7 @@ class JenisSampah extends Model
 
     public function buku_setorans()
     {
-        return $this->hasMany(BukuSetoran::class, 'jenis_sampah');
+        return $this->hasMany(BukuSetoran::class, 'jenis_sampah_id');
     }
 
 }

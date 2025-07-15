@@ -12,9 +12,8 @@ class BukuSetoran extends Model
     protected $fillable = [
         'user_id',
         'tanggal_setor',
-        'jenis_sampah',
+        'jenis_sampah_id', 
         'berat',
-        'harga_per_kg',
         'total',
         'foto_bukti',
         'status'
@@ -25,13 +24,8 @@ class BukuSetoran extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function jenis()
-    {
-        return $this->belongsTo(JenisSampah::class, 'jenis_sampah');
-    }
-
     public function jenisSampah()
     {
-        return $this->belongsTo(JenisSampah::class, 'jenis_sampah');
+        return $this->belongsTo(JenisSampah::class);
     }
 }

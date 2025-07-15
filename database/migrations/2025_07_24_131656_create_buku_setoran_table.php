@@ -15,9 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->date('tanggal_setor');
-            $table->unsignedBigInteger('jenis_sampah');
+            $table->foreignId('jenis_sampah_id')->constrained('jenis_sampahs')->onDelete('cascade');
             $table->decimal('berat', 8, 2);
-            $table->integer('harga_per_kg');
             $table->integer('total');
             $table->string('foto_bukti')->nullable();
             $table->timestamps();

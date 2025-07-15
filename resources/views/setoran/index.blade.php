@@ -52,10 +52,10 @@
                                     @if (auth()->user()->role !== 'nasabah')
                                         <td>{{ $s->user->name }}</td>
                                     @endif
-                                    <td>{{ $s->tanggal_setor }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($s->tanggal_setor)->translatedFormat('d F Y') }}</td>
                                     <td>{{ $s->jenisSampah->nama ?? 'Tidak Diketahui' }}</td>
-                                    <td>{{ $s->berat }}</td>
-                                    <td>Rp{{ number_format($s->harga_per_kg) }}</td>
+                                    <td>{{ number_format($s->berat) }}</td>
+                                    <td>Rp{{ number_format($s->jenisSampah->harga_per_kg) }}</td>
                                     <td>Rp{{ number_format($s->total) }}</td>
                                     <td>
                                         @if ($s->foto_bukti)
@@ -96,14 +96,15 @@
             
                                     @if (auth()->user()->role !== 'nasabah')
                                         <td style="width: 150px">
-                                            <a href="{{ route('setoran.edit', $s->id) }}"
-                                                class="btn btn-primary btn-sm">Edit</a>
+                                            <a href="{{ route('setoran.edit', $s->id) }}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-pen"></i>
+                                            </a>
                                             <form action="{{ route('setoran.destroy', $s->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" onclick="return confirm('Yakin hapus data ini?')"
                                                     class="btn btn-danger btn-sm">
-                                                    Hapus
+                                                    <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             </form>
                                         </td>

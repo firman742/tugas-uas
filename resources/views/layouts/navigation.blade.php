@@ -37,9 +37,9 @@
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Submenu Laporan:</h6>
-            <a class="collapse-item" href="">Laporan</a>
-            <a class="collapse-item" href="">Harian</a>
-            <a class="collapse-item" href="">Bulanan</a>
+            <a class="collapse-item {{ request()->routeIs('laporan.index') ? 'active' : '' }}" href="{{ route('laporan.index') }}">Laporan</a>
+            <a class="collapse-item {{ request()->routeIs('laporan.harian') ? 'active' : '' }}" href="{{ route('laporan.harian') }}">Harian</a>
+            <a class="collapse-item {{ request()->routeIs('laporan.bulanan') ? 'active' : '' }}" href="{{ route('laporan.bulanan') }}">Bulanan</a>
         </div>
     </div>
 </li>

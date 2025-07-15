@@ -16,46 +16,6 @@ use App\Models\JenisSampah;
 
 class BukuSetoranController extends Controller
 {
-    public function create()
-    {
-        $nasabahs = User::where('role', 'nasabah')->get();
-        $jenisSampahs = \App\Models\JenisSampah::all();
-        return view('setoran.create', compact('nasabahs', 'jenisSampahs'));
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'tanggal_setor' => 'required|date',
-            'jenis_sampah' => 'required|string',
-            'berat' => 'required|numeric|min:0.1',
-            'harga_per_kg' => 'required|numeric|min:1',
-            'foto_bukti' => 'nullable|image|max:2048', // max 2MB
-        ]);
-
-        $total = $request->berat * $request->harga_per_kg;
-
-        $fotoPath = null;
-        if ($request->hasFile('foto_bukti')) {
-            $fotoPath = $request->file('foto_bukti')->store('bukti', 'public');
-        }
-
-        $jenis = JenisSampah::findOrFail($request->jenis_sampah);
-
-        BukuSetoran::create([
-            'user_id' => $request->user_id,
-            'tanggal_setor' => $request->tanggal_setor,
-            'jenis_sampah' => $request->jenis_sampah,
-            'berat' => $request->berat,
-            'harga_per_kg' => $request->harga_per_kg,
-            'total' => $jenis->harga_per_kg * $request->berat,
-            'foto_bukti' => $fotoPath,
-        ]);
-
-        return redirect()->route('setoran.index')->with('success', 'Setoran berhasil disimpan.');
-    }
-
     public function index(Request $request)
     {
         $query = BukuSetoran::with('user', 'jenisSampah')->latest();
@@ -78,6 +38,48 @@ class BukuSetoranController extends Controller
         $values = $setorans->pluck('jumlah');
 
         return view('setoran.index', compact('setorans', 'labels', 'values'));
+    }
+
+    public function create()
+    {
+        $nasabahs = User::where('role', 'nasabah')->get();
+        $jenisSampahs = \App\Models\JenisSampah::all();
+        return view('setoran.create', compact('nasabahs', 'jenisSampahs'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'tanggal_setor' => 'required|date',
+            'jenis_sampah_id' => 'required|exists:jenis_sampahs,id',
+            'berat' => 'required|numeric|min:0.1',
+            'harga_per_kg' => 'required',
+            'foto_bukti' => 'nullable|image|max:2048', // max 2MB
+        ]);
+
+        $hargaPerKg = (int) preg_replace('/[^0-9]/', '', $request->harga_per_kg);
+
+        $total = $request->berat * $hargaPerKg;
+
+        $fotoPath = null;
+        if ($request->hasFile('foto_bukti')) {
+            $fotoPath = $request->file('foto_bukti')->store('bukti', 'public');
+        }
+
+        $jenis = JenisSampah::findOrFail($request->jenis_sampah_id);
+
+        BukuSetoran::create([
+            'user_id' => $request->user_id,
+            'tanggal_setor' => $request->tanggal_setor,
+            'jenis_sampah_id' => $jenis->id,
+            'berat' => $request->berat,
+            'harga_per_kg' => $hargaPerKg,
+            'total' => $total,
+            'foto_bukti' => $fotoPath,
+        ]);
+
+        return redirect()->route('setoran.index')->with('success', 'Setoran berhasil disimpan.');
     }
 
     public function edit($id)
@@ -181,8 +183,8 @@ class BukuSetoranController extends Controller
         $valuesNasabah = $rankingNasabah->pluck('jumlah');
 
         // Ambil total setoran per jenis sampah
-        $rankingJenis = BukuSetoran::selectRaw('jenis_sampah, SUM(total) as jumlah')
-            ->groupBy('jenis_sampah')
+        $rankingJenis = BukuSetoran::selectRaw('jenis_sampah_id, SUM(total) as jumlah')
+            ->groupBy('jenis_sampah_id')
             ->with('jenisSampah')
             ->get()
             ->map(function ($item) {

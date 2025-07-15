@@ -66,7 +66,7 @@
                                                 @endif
                                             </td>
                                             <td rowspan="{{ $rowspan }}" class="text-center">
-                                                <a href="{{ route('sales.edit', $penjualan->id) }}" class="btn btn-warning btn-sm">
+                                                <a href="{{ route('sales.edit', $penjualan->id) }}" class="btn btn-primary btn-sm">
                                                     <i class="fas fa-pen"></i>
                                                 </a>
                                                 <form action="{{ route('sales.destroy', $penjualan->id) }}" method="POST" class="d-inline">
