@@ -37,38 +37,46 @@
                                 <th>Tanggal</th>
                                 <th>Nama Tengkulak</th>
                                 <th>Jenis Sampah</th>
-                                <th>Jumlah</th>
+                                <th>Jumlah (Per KG)</th>
                                 <th>Total Penjualan</th>
                                 <th>Bukti</th>
-                                <th>Aksi</th>
+                                <th>Keterangan</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($penjualans as $penjualan)
-                                @foreach ($penjualan->details as $detail)
+                                @php $rowspan = count($penjualan->details); @endphp
+                                @foreach ($penjualan->details as $i => $detail)
                                     <tr>
-                                        <td>{{ \Carbon\Carbon::parse($penjualan->tanggal)->translatedFormat('d F Y') }}</td>
-                                        <td>{{ $penjualan->nama_tengkulak }}</td>
-                                        <td>{{ $detail->jenis_sampah }}</td>
-                                        <td>{{ $detail->jumlah }}</td>
-                                        <td>{{ number_format($detail->total_penjualan) }}</td>
-                                        <td>
-                                            @if ($penjualan->bukti)
-                                                <img src="{{ asset('storage/bukti/' . $penjualan->bukti) }}" width="80">
-                                            @else
-                                                Tidak ada
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('sales.edit', $penjualan->id) }}"
-                                                class="btn btn-warning btn-sm">Edit</a>
-                                            <form action="{{ route('sales.destroy', $penjualan->id) }}" method="POST"
-                                                class="d-inline">
-                                                @csrf @method('DELETE')
-                                                <button onclick="return confirm('Yakin ingin hapus?')"
-                                                    class="btn btn-danger btn-sm">Hapus</button>
-                                            </form>
-                                        </td>
+                                        @if ($i === 0)
+                                            <td rowspan="{{ $rowspan }}">{{ \Carbon\Carbon::parse($penjualan->tanggal)->translatedFormat('d F Y') }}</td>
+                                            <td rowspan="{{ $rowspan }}">{{ $penjualan->nama_tengkulak }}</td>
+                                        @endif
+                        
+                                        <td>{{ $detail->jenisSampah->nama ?? '-' }}</td>
+                                        <td>{{ $detail->jumlah }} kg</td>
+                                        <td>Rp{{ number_format($detail->total_penjualan, 0, ',', '.') }}</td>
+                        
+                                        @if ($i === 0)
+                                            <td rowspan="{{ $rowspan }}">
+                                                @if ($penjualan->bukti)
+                                                    <img src="{{ asset('storage/bukti/' . $penjualan->bukti) }}" width="80">
+                                                @else
+                                                    Tidak ada
+                                                @endif
+                                            </td>
+                                            <td rowspan="{{ $rowspan }}" class="text-center">
+                                                <a href="{{ route('sales.edit', $penjualan->id) }}" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-pen"></i>
+                                                </a>
+                                                <form action="{{ route('sales.destroy', $penjualan->id) }}" method="POST" class="d-inline">
+                                                    @csrf @method('DELETE')
+                                                    <button onclick="return confirm('Yakin ingin hapus?')" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             @empty

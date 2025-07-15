@@ -31,9 +31,11 @@
                         <thead>
                             <tr>
                                 <th>Jenis Sampah</th>
-                                <th>Jumlah</th>
-                                <th>Total Penjualan</th>
-                                <th><button type="button" class="btn btn-sm btn-success" id="addRow">+</button></th>
+                                <th>Jumlah (Per KG)</th>
+                                <th>Total Penjualan (Rupiah)</th>
+                                <th>
+                                    <button type="button" class="btn btn-sm btn-success" id="addRow">+</button>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,63 +44,121 @@
                                     <td>
                                         <select name="jenis_sampah[]" class="form-control" required>
                                             <option value="" disabled>-- Pilih Jenis --</option>
-                                            @foreach (['kardus', 'botol', 'logam', 'kertas hvs', 'kertas duplex', 'tembaga', 'ban motor'] as $jenis)
-                                                <option value="{{ $jenis }}"
-                                                    {{ $detail->jenis_sampah == $jenis ? 'selected' : '' }}>
-                                                    {{ ucfirst($jenis) }}
+                                            @foreach ($jenisSampahList as $jenis)
+                                                <option value="{{ $jenis->id }}" data-harga="{{ $jenis->harga_per_kg }}"
+                                                    {{ $detail->jenis_sampah_id == $jenis->id ? 'selected' : '' }}>
+                                                    {{ $jenis->nama }}
                                                 </option>
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td><input type="number" name="jumlah[]" class="form-control"
-                                            value="{{ $detail->jumlah }}" required></td>
-                                    <td><input type="number" name="total_penjualan[]" class="form-control"
-                                            value="{{ $detail->total_penjualan }}" readonly></td>
-                                    <td><button type="button" class="btn btn-sm btn-danger removeRow">x</button></td>
+                                    <td>
+                                        <input type="text" class="form-control jumlah-format"
+                                            value="{{ number_format($detail->jumlah, 0, ',', '.') }}" required>
+                                        <input type="hidden" name="jumlah[]" class="jumlah-hidden"
+                                            value="{{ $detail->jumlah }}">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control total-format"
+                                            value="Rp{{ number_format($detail->total_penjualan, 0, ',', '.') }}" readonly>
+                                        <input type="hidden" name="total_penjualan[]" class="total-hidden"
+                                            value="{{ $detail->total_penjualan }}">
+                                    </td>
+
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-danger removeRow">x</button>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
 
-                    <button type="submit" class="btn btn-primary">Update</button>
-                    <a href="{{ route('sales.index') }}" class="btn btn-secondary">Batal</a>
+                    <div class="mt-3">
+                        <label>Total Keseluruhan:</label>
+                        <input type="text" id="totalKeseluruhan" class="form-control" readonly>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">Update</button>
+                    <a href="{{ route('sales.index') }}" class="btn btn-secondary mt-3">Batal</a>
                 </form>
             </div>
         </div>
 
         <script>
-            const hargaSampah = {
-                kardus: 1500,
-                botol: 2000,
-                logam: 4500,
-                "kertas hvs": 900,
-                "kertas duplex": 1200,
-                tembaga: 7500,
-                "ban motor": 700
-            };
+            const hargaSampahMap = {};
+            document.querySelectorAll('select[name="jenis_sampah[]"] option').forEach(opt => {
+                if (opt.value) {
+                    hargaSampahMap[opt.value] = parseFloat(opt.getAttribute('data-harga')) || 0;
+                }
+            });
+
+            function formatRupiah(angka) {
+                return new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                }).format(angka);
+            }
+
+            function parseRupiah(str) {
+                return parseInt((str || '').toString().replace(/[^0-9]/g, '')) || 0;
+            }
 
             function hitungTotal(row) {
-                const jenis = row.querySelector('select[name="jenis_sampah[]"]').value;
-                const jumlah = parseFloat(row.querySelector('input[name="jumlah[]"]').value) || 0;
-                const harga = hargaSampah[jenis] || 0;
-                row.querySelector('input[name="total_penjualan[]"]').value = jumlah * harga;
+                const jenisSelect = row.querySelector('select[name="jenis_sampah[]"]');
+                const jumlahInput = row.querySelector('.jumlah-format');
+                const jumlahHidden = row.querySelector('.jumlah-hidden');
+                const totalFormat = row.querySelector('.total-format');
+                const totalHidden = row.querySelector('.total-hidden');
+
+                const jenisId = jenisSelect?.value;
+                const harga = hargaSampahMap[jenisId] || 0;
+
+                const jumlah = parseRupiah(jumlahInput.value);
+                const total = jumlah * harga;
+
+                jumlahHidden.value = jumlah;
+                totalHidden.value = total;
+                totalFormat.value = formatRupiah(total);
+            }
+
+            function updateTotalKeseluruhan() {
+                let totalKeseluruhan = 0;
+                document.querySelectorAll('.total-hidden').forEach(input => {
+                    totalKeseluruhan += parseInt(input.value) || 0;
+                });
+
+                const totalField = document.getElementById('totalKeseluruhan');
+                if (totalField) {
+                    totalField.value = formatRupiah(totalKeseluruhan);
+                }
             }
 
             document.addEventListener('input', function(e) {
                 if (
                     e.target.matches('select[name="jenis_sampah[]"]') ||
-                    e.target.matches('input[name="jumlah[]"]')
+                    e.target.matches('.jumlah-format')
                 ) {
                     const row = e.target.closest('tr');
-                    hitungTotal(row);
+                    if (row) {
+                        hitungTotal(row);
+                        updateTotalKeseluruhan();
+                    }
                 }
             });
 
             document.getElementById('addRow').addEventListener('click', function() {
                 const tableBody = document.querySelector('#sampahTable tbody');
                 const newRow = tableBody.rows[0].cloneNode(true);
-                newRow.querySelectorAll('input').forEach(input => input.value = '');
-                newRow.querySelector('select').selectedIndex = 0;
+
+                // reset values
+                newRow.querySelectorAll('input').forEach(input => {
+                    input.value = '';
+                });
+
+                const select = newRow.querySelector('select');
+                if (select) select.selectedIndex = 0;
+
                 tableBody.appendChild(newRow);
             });
 
@@ -107,7 +167,15 @@
                     const row = e.target.closest('tr');
                     const rows = document.querySelectorAll('#sampahTable tbody tr');
                     if (rows.length > 1) row.remove();
+                    updateTotalKeseluruhan();
                 }
+            });
+
+            window.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('#sampahTable tbody tr').forEach(row => {
+                    hitungTotal(row);
+                });
+                updateTotalKeseluruhan();
             });
         </script>
     @endsection

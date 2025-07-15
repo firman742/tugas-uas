@@ -6,9 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class JenisSampah extends Model
 {
-    public function setorans()
+    protected $table = "jenis_sampahs";
+
+    protected $fillable = [
+        'nama',
+        'harga_per_kg',
+    ];
+
+    public function buku_setorans()
     {
-        return $this->hasMany(Setoran::class, 'jenis_sampah');
+        return $this->hasMany(BukuSetoran::class, 'jenis_sampah');
     }
 
 }

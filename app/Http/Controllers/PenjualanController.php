@@ -3,21 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Penjualan;
-use App\Models\PenjualanDetail;
+use App\Models\JenisSampah;
 use Illuminate\Http\Request;
+use App\Models\PenjualanDetail;
 use Illuminate\Support\Facades\Storage;
 
 class PenjualanController extends Controller
 {
     public function index()
     {
-        $penjualans = Penjualan::with('details')->latest()->get();
+        $penjualans = Penjualan::with('details.jenisSampah')->latest()->get();
         return view('penjualan.index', compact('penjualans'));
     }
 
     public function create()
     {
-        return view('penjualan.create');
+        $jenisSampahList = JenisSampah::all();
+        return view('penjualan.create', compact('jenisSampahList'));
     }
 
     public function store(Request $request)
@@ -26,7 +28,7 @@ class PenjualanController extends Controller
             'tanggal' => 'required|date',
             'nama_tengkulak' => 'required|string',
             'bukti' => 'nullable|image|max:2048',
-            'jenis_sampah.*' => 'required|string',
+            'jenis_sampah.*' => 'required|exists:jenis_sampahs,id',
             'jumlah.*' => 'required|numeric',
             'total_penjualan.*' => 'required|numeric',
         ]);
@@ -50,13 +52,15 @@ class PenjualanController extends Controller
             'bukti' => $filename
         ]);
 
+        foreach ($request->jenis_sampah as $i => $jenisId) {
+            $jenis = JenisSampah::find($jenisId);
+            if (!$jenis) continue;
 
-        foreach ($request->jenis_sampah as $i => $jenis) {
             PenjualanDetail::create([
                 'penjualan_id' => $penjualan->id,
-                'jenis_sampah' => $jenis,
+                'jenis_sampah_id' => $jenis->id,
                 'jumlah' => $request->jumlah[$i],
-                'total_penjualan' => $request->total_penjualan[$i]
+                'total_penjualan' => $request->total_penjualan[$i],
             ]);
         }
 
@@ -66,7 +70,8 @@ class PenjualanController extends Controller
     public function edit($id)
     {
         $penjualan = Penjualan::with('details')->findOrFail($id);
-        return view('penjualan.edit', compact('penjualan'));
+        $jenisSampahList = JenisSampah::all();
+        return view('penjualan.edit', compact('penjualan', 'jenisSampahList'));
     }
 
     public function update(Request $request, $id)
@@ -75,7 +80,7 @@ class PenjualanController extends Controller
             'tanggal' => 'required|date',
             'nama_tengkulak' => 'required|string',
             'bukti' => 'nullable|image|max:2048',
-            'jenis_sampah.*' => 'required|string',
+            'jenis_sampah.*' => 'required|exists:jenis_sampahs,id',
             'jumlah.*' => 'required|numeric',
             'total_penjualan.*' => 'required|numeric',
         ]);
@@ -100,12 +105,14 @@ class PenjualanController extends Controller
 
         $penjualan->details()->delete();
 
-        foreach ($request->jenis_sampah as $i => $jenis) {
+        foreach ($request->jenis_sampah as $i => $jenisId) {
+            $jenis = JenisSampah::find($jenisId);
+            if (!$jenis) continue;
+        
             PenjualanDetail::create([
                 'penjualan_id' => $penjualan->id,
-                'jenis_sampah' => $jenis,
+                'jenis_sampah_id' => $jenis->id,
                 'jumlah' => $request->jumlah[$i],
-                'harga' => $this->hargaSampah($jenis),
                 'total_penjualan' => $request->total_penjualan[$i],
             ]);
         }

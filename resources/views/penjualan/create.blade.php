@@ -10,7 +10,8 @@
 
                         <div class="mb-3">
                             <label for="tanggal">Tanggal</label>
-                            <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror" required>
+                            <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror"
+                                required>
                             @error('tanggal')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -18,7 +19,8 @@
 
                         <div class="mb-3">
                             <label for="nama_tengkulak">Nama Tengkulak</label>
-                            <input type="text" name="nama_tengkulak" class="form-control @error('nama_tengkulak') is-invalid @enderror" required>
+                            <input type="text" name="nama_tengkulak"
+                                class="form-control @error('nama_tengkulak') is-invalid @enderror" required>
                             @error('nama_tengkulak')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -36,31 +38,43 @@
                             <thead>
                                 <tr>
                                     <th>Jenis Sampah</th>
-                                    <th>Jumlah</th>
-                                    <th>Total Penjualan</th>
-                                    <th><button type="button" class="btn btn-sm btn-success" id="addRow">+</button></th>
+                                    <th>Jumlah (Per KG)</th>
+                                    <th>Total Penjualan (Rupiah)</th>
+                                    <th>
+                                        <button type="button" class="btn btn-sm btn-success" id="addRow">+</button>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>
-                                        <select name="jenis_sampah[]" class="form-control" required>
+                                        <select name="jenis_sampah[]" class="form-control jenis-sampah" required>
                                             <option value="" disabled selected>-- Pilih Jenis Sampah --</option>
-                                            <option value="kardus">Kardus</option>
-                                            <option value="botol">Botol</option>
-                                            <option value="logam">Logam</option>
-                                            <option value="kertas hvs">Kertas HVS</option>
-                                            <option value="kertas duplex">Kertas Duplex</option>
-                                            <option value="tembaga">Tembaga</option>
-                                            <option value="ban motor">Ban Motor</option>
+                                            @foreach ($jenisSampahList as $jenis)
+                                                <option value="{{ $jenis->id }}" data-harga="{{ $jenis->harga_per_kg }}">
+                                                    {{ $jenis->nama }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </td>
-                                    <td><input type="number" name="jumlah[]" class="form-control" required></td>
-                                    <td><input type="number" name="total_penjualan[]" class="form-control" readonly></td>
+                                    <td>
+                                        <input type="text" class="form-control jumlah-format" required>
+                                        <input type="hidden" name="jumlah[]" class="jumlah-hidden">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control total-format" readonly>
+                                        <input type="hidden" name="total_penjualan[]" class="total-hidden">
+                                    </td>
+
                                     <td><button type="button" class="btn btn-sm btn-danger removeRow">x</button></td>
                                 </tr>
                             </tbody>
                         </table>
+
+                        <div class="mt-3">
+                            <label>Total Keseluruhan:</label>
+                            <input type="text" id="totalKeseluruhan" class="form-control" readonly>
+                        </div>
 
                         <button type="submit" class="btn btn-primary mt-3">Simpan</button>
                         <a href="{{ route('sales.index') }}" class="btn btn-secondary mt-3">Kembali</a>
@@ -68,43 +82,77 @@
                 </div>
             </div>
             <script>
-                const hargaSampah = {
-                    kardus: 1500,
-                    botol: 2000,
-                    logam: 4500,
-                    "kertas hvs": 900,
-                    "kertas duplex": 1200,
-                    tembaga: 7500,
-                    "ban motor": 700
-                };
-
-                //otomatis hitung
-                function hitungTotal(row) {
-                    const jenis = row.querySelector('select[name="jenis_sampah[]"]').value;
-                    const jumlah = parseFloat(row.querySelector('input[name="jumlah[]"]').value) || 0;
-                    const harga = hargaSampah[jenis] || 0;
-                    const total = jumlah * harga;
-                    row.querySelector('input[name="total_penjualan[]"]').value = total;
+                function formatRupiah(angka) {
+                    return new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0
+                    }).format(angka);
                 }
 
-                //trigger otomatis saat pilih jenis atau jumlah
+                function parseRupiah(str) {
+                    return parseInt(str.replace(/[^0-9]/g, '')) || 0;
+                }
+
+                function hitungTotal(row) {
+                    const selected = row.querySelector('select[name="jenis_sampah[]"]').selectedOptions[0];
+                    const jumlahInput = row.querySelector('.jumlah-format');
+                    const jumlahHidden = row.querySelector('.jumlah-hidden');
+
+                    const jumlah = parseRupiah(jumlahInput.value);
+                    jumlahHidden.value = jumlah;
+
+                    const harga = parseFloat(selected?.getAttribute('data-harga')) || 0;
+                    const total = jumlah * harga;
+
+                    row.querySelector('.total-format').value = formatRupiah(total);
+                    row.querySelector('.total-hidden').value = total;
+                }
+
+                function updateTotalKeseluruhan() {
+                    let total = 0;
+                    document.querySelectorAll('.total-hidden').forEach(input => {
+                        total += parseInt(input.value) || 0;
+                    });
+                    document.getElementById('totalKeseluruhan').value = formatRupiah(total);
+                }
+
                 document.addEventListener('input', function(e) {
                     if (
                         e.target.matches('select[name="jenis_sampah[]"]') ||
-                        e.target.matches('input[name="jumlah[]"]')
+                        e.target.matches('.jumlah-format')
                     ) {
                         const row = e.target.closest('tr');
                         hitungTotal(row);
+                        updateTotalKeseluruhan();
                     }
                 });
-            </script>
+
+                // Format on blur (optional)
+            //     document.addEventListener('blur', function(e) {
+            //         if (e.target.matches('.jumlah-format')) {
+            //             const val = parseRupiah(e.target.value);
+            //             e.target.value = val > 0 ? formatRupiah(val) : '';
+            //         }
+            //     }, true);
+            // </script>
+
         </div>
 
         <script>
             document.getElementById('addRow').addEventListener('click', function() {
                 const tableBody = document.querySelector('#sampahTable tbody');
                 const newRow = tableBody.rows[0].cloneNode(true);
-                newRow.querySelectorAll('input').forEach(input => input.value = '');
+
+                // Reset inputs
+                newRow.querySelectorAll('input').forEach(input => {
+                    input.value = '';
+                });
+
+                // Optional: reset selected option
+                const select = newRow.querySelector('select');
+                if (select) select.selectedIndex = 0;
+
                 tableBody.appendChild(newRow);
             });
 
