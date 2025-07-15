@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BukuSetoran;
 use Illuminate\Http\Request;
-use App\Models\Setoran;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -14,9 +14,9 @@ class DashboardController extends Controller
 
         // Kalau admin, tampilkan semua data seperti sebelumnya
         if ($user->role !== 'nasabah') {
-            $totalSetoran = \App\Models\Setoran::sum('total');
+            $totalSetoran = BukuSetoran::sum('total');
 
-            $perBulan = \App\Models\Setoran::selectRaw('MONTH(tanggal_setor) as bulan, SUM(total) as total')
+            $perBulan = BukuSetoran::selectRaw('MONTH(tanggal_setor) as bulan, SUM(total) as total')
                 ->whereYear('tanggal_setor', now()->year)
                 ->groupBy('bulan')
                 ->orderBy('bulan')
@@ -36,8 +36,8 @@ class DashboardController extends Controller
 
         // Kalau nasabah, tampilkan data pribadi
         else {
-            $totalSetoran = \App\Models\Setoran::where('user_id', $user->id)->sum('total');
-            $riwayat = \App\Models\Setoran::where('user_id', $user->id)->orderByDesc('tanggal_setor')->take(10)->get();
+            $totalSetoran = BukuSetoran::where('user_id', $user->id)->sum('total');
+            $riwayat = BukuSetoran::where('user_id', $user->id)->orderByDesc('tanggal_setor')->take(10)->get();
 
             return view('dashboard', compact('totalSetoran', 'riwayat'));
         }

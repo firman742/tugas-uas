@@ -160,4 +160,47 @@ class BukuSetoranController extends Controller
 
         return redirect()->back()->with('success', 'Status berhasil diperbarui.');
     }
+
+    public function ranking()
+    {
+        // Ambil total setoran per user (untuk ranking nasabah)
+        $rankingNasabah = BukuSetoran::selectRaw('user_id, SUM(total) as jumlah')
+            ->groupBy('user_id')
+            ->with('user')
+            ->orderByDesc('jumlah')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->user_id,
+                    'nama' => $item->user->name ?? '-',
+                    'jumlah' => $item->jumlah,
+                ];
+            });
+
+        $labelsNasabah = $rankingNasabah->pluck('nama');
+        $valuesNasabah = $rankingNasabah->pluck('jumlah');
+
+        // Ambil total setoran per jenis sampah
+        $rankingJenis = BukuSetoran::selectRaw('jenis_sampah, SUM(total) as jumlah')
+            ->groupBy('jenis_sampah')
+            ->with('jenisSampah')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'nama' => $item->jenisSampah->nama ?? '-',
+                    'jumlah' => $item->jumlah,
+                ];
+            });
+
+        $labelsJenis = $rankingJenis->pluck('nama');
+        $valuesJenis = $rankingJenis->pluck('jumlah');
+
+        return view('setoran.ranking-setoran', [
+            'setorans' => $rankingNasabah,
+            'labelsNasabah' => $labelsNasabah,
+            'valuesNasabah' => $valuesNasabah,
+            'labelsJenis' => $labelsJenis,
+            'valuesJenis' => $valuesJenis,
+        ]);
+    }
 }

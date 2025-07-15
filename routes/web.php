@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Models\BukuSetoran;
 
 Route::get('/', function () {
     return view('welcome');
@@ -43,6 +44,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/setoran/{id}/status', [BukuSetoranController::class, 'updateStatus'])->name('setoran.updateStatus');
     Route::get('/setoran', [BukuSetoranController::class, 'index'])->name('setoran.index');
     Route::get('/setoran/export/pdf', [BukuSetoranController::class, 'exportPdf'])->name('setoran.export.pdf');
+
+    Route::get('/ranking-setoran', [BukuSetoranController::class, 'ranking'])->name('setoran.ranking');
     // Route::get('/setoran/export/excel', [BukuSetoranController::class, 'exportExcel'])->name('setoran.export.excel');
 });
 

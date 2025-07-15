@@ -25,6 +25,12 @@
 
     <!-- for chart setoran -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            width: 400px;
+            margin: 30px auto;
+        }
+    </style>
 
 </head>
 

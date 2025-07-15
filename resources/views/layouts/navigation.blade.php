@@ -6,8 +6,8 @@
 </li>
 
 <!-- Nav Item - ranking setoran (Fajar) -->
-<li class="nav-item">
-    <a class="nav-link" href="">
+<li class="nav-item {{ request()->routeIs('setoran.ranking') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('setoran.ranking') }}">
         <i class="fas fa-fw fa-money-bill"></i>
         <span>Rangking Setoran</span></a>
 </li>
